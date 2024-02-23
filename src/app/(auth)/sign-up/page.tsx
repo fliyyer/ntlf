@@ -1,15 +1,22 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import Google from '@/assets/google.png';
-import { GithubIcon } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
-import Image from 'next/image';
+import ButtonGithub from '@/app/components/ButtonGithub';
+import ButtonGoogle from '@/app/components/ButtonGoogle';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/utils/auth';
+import { redirect } from 'next/navigation';
 
-export default function SignUp() {
+export default async function SignUp() {
+  const session = await getServerSession(authOptions);
+
+  if (session) {
+    return redirect('/home');
+  }
   return (
     <div className="rounded bg-black/80 py-10 mt-24 md:mt-0 px-6 md:max-w-sm md:px-14">
-      <form>
+      <form method="post" action={'/api/auth/signin'}>
         <h1 className="text-3xl font-semibold text-white">Sign Up</h1>
         <div className="space-y-4 mt-5">
           <Input
@@ -33,12 +40,8 @@ export default function SignUp() {
         </Link>
       </div>
       <div className="flex w-full justify-center items-center gap-x-3 mt-6">
-        <Button variant="outline" size="icon">
-          <GithubIcon className="w-4 h-4" />
-        </Button>
-        <Button variant="outline" size="icon">
-          <Image src={Google} alt="Google Icon" className="w-4 h-4" />
-        </Button>
+        <ButtonGithub />
+        <ButtonGoogle />
       </div>
     </div>
   );
